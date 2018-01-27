@@ -7,10 +7,10 @@
 //
 
 import UIKit
+import AVFoundation
 
 class ViewController: UIViewController {
 
-    
     @IBOutlet weak var CurrentQuestion: UILabel!
     @IBOutlet weak var canvasView: UIStackView!
     
@@ -24,6 +24,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         CurrentQuestion.text = questions[0]
+        saySpeech(text: questions[0])
         canvasView.clipsToBounds = true
         canvasView.isMultipleTouchEnabled = false
         let tap = UITapGestureRecognizer(target: self, action: #selector(doubleTap))
@@ -36,7 +37,13 @@ class ViewController: UIViewController {
         canvasView.layer.sublayers = nil
         canvasView.setNeedsDisplay()
         currentNumber += 1
-        CurrentQuestion.text = questions[currentNumber]
+        if(currentNumber != questions.count) {
+            CurrentQuestion.text = questions[currentNumber]
+            saySpeech(text: questions[currentNumber])
+        } else {
+            CurrentQuestion.text = "END OF QUESTIONS"
+            saySpeech(text: "END OF QUESTIONS")
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -60,6 +67,13 @@ class ViewController: UIViewController {
         path.addLine(to: touchPoint)
         startPoint = touchPoint
         draw()
+    }
+    
+    func saySpeech(text: String) {
+        let u = AVSpeechUtterance(string: text)
+        u.rate = 0.5;
+        let synthesizer = AVSpeechSynthesizer()
+        synthesizer.speak(u)
     }
     
     func draw() {
