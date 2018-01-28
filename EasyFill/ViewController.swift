@@ -3,6 +3,7 @@
 //  EasyFill
 //
 //  Created by Daniel Yen on 1/27/18.
+// do u kno da wae?
 //  Copyright © 2018 Daniel Yen. All rights reserved.
 //
 
@@ -110,59 +111,30 @@ class ViewController: UIViewController, SFSpeechRecognizerDelegate{
     }
     
     func saveImage() {
-        let renderer = UIGraphicsImageRenderer(size: canvasView.bounds.size)
-        let image = renderer.image { ctx in
-            view.drawHierarchy(in: canvasView.bounds, afterScreenUpdates: true)
-        }
+//        let renderer = UIGraphicsImageRenderer(size: canvasView.bounds.size)
+//        let image = renderer.image { ctx in
+//            view.drawHierarchy(in: canvasView.bounds, afterScreenUpdates: true)
+//        }
+//
+//        let imageData = UIImagePNGRepresentation(image)!
+//        //let base64String = imageData.base64EncodedString()
+//        Alamofire.upload(imageData, to: "http://104.196.218.215/test_2").responseJSON { response in
+//            debugPrint(response)
+//        }
         
-        let imageData = UIImagePNGRepresentation(image)!
-        //let base64String = imageData.base64EncodedString()
-        Alamofire.upload(imageData, to: "http://104.196.218.215/convert_image").responseJSON { response in
-            debugPrint(response)
-        }
-        
-        /*let authToken = "Token \(user_token!)"
-        
-        let headers = [
-            "Authorization": authToken
+        let parameters: Parameters = [
+            "Message": "Hello, Moto"
         ]
-        
-        let parameters: Parameters = ["name": "test_place",
-                                      "description": "testing image upload from swift"]
-        
-        Alamofire.upload(
-            multipartFormData: { multipartFormData in
-                if let image = self.imageView.image {
-                    let imageData = UIImageJPEGRepresentation(image, 0.8)
-                    multipartFormData.append(imageData!, withName: "image", fileName: "photo.jpg", mimeType: "jpg/png")
-                }
-                for (key, value) in parameters {
-                    if value is String || value is Int {
-                        multipartFormData.append("\(value)".data(using: .utf8)!, withName: key)
-                    }
-                }
-        },
-            to: "URL",
-            headers: headers,
-            encodingCompletion: { encodingResult in
-                switch encodingResult {
-                case .success(let upload, _, _):
-                    upload.responseJSON { response in
-                        debugPrint(response)
-                        
-                    }
-                case .failure(let encodingError):
-                    print("encoding Error : \(encodingError)")
-                }
-        })*/
-        
-    }
+        Alamofire.request("http://104.196.218.215/todo2", method: .post, parameters: parameters).responseJSON { response in
+                debugPrint(response)
+        }
+   }
     
 //    func recognizeSpeech() {
 //        let audioURL = Bundle.main.url(forResource: "perro", withExtension: "m4a")
 //        guard let myRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US")) else { return }
 //        if !myRecognizer.isAvailable
-//    }
+  //  }
     
 }
 
