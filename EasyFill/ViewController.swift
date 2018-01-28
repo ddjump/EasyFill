@@ -18,12 +18,13 @@ class ViewController: UIViewController {
     var path = UIBezierPath()
     var startPoint: CGPoint!
     var touchPoint: CGPoint!
-    var questions = ["What is your last name?", "What is your first name?", "What is your birthday?", "How old are you?"]
+    var questions = ["What is your last name?", "What is your first name?", "What is your middle name?", "What is your birthday? For example 1 / 1 / 19 95", "What is your gender?", "What is your place of birth?", "What is your social security number?", "What is your email?", "What is your phone number?", "What is the mailing address?", "What is the city?", "What is the state?", "What is the zip code?", "What is the county?", "What other names you have used? Step if you dont have one."]
     var currentNumber = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        sayIntro()
         CurrentQuestion.text = questions[0]
         saySpeech(text: questions[0])
         canvasView.clipsToBounds = true
@@ -87,6 +88,12 @@ class ViewController: UIViewController {
         canvasView.layer.addSublayer(strokeLayer)
         canvasView.setNeedsDisplay()
     }
+    
+    func sayIntro() {
+        let speech = "Hi, welcome to Easy Fill. We will read you all question from a form. Please write the answer on the i pad. Double tap to go to the next question."
+        saySpeech(text: speech)
+    }
+    
     
     func saveImage() {
         let renderer = UIGraphicsImageRenderer(size: canvasView.bounds.size)
