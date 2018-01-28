@@ -9,8 +9,9 @@
 import UIKit
 import AVFoundation
 import Alamofire
+import Speech
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, SFSpeechRecognizerDelegate{
 
     @IBOutlet weak var CurrentQuestion: UILabel!
     @IBOutlet weak var canvasView: UIStackView!
@@ -18,13 +19,20 @@ class ViewController: UIViewController {
     var path = UIBezierPath()
     var startPoint: CGPoint!
     var touchPoint: CGPoint!
-    var questions = ["What is your last name?", "What is your first name?", "What is your middle name?", "What is your birthday? For example 1 / 1 / 19 95", "What is your gender?", "What is your place of birth?", "What is your social security number?", "What is your email?", "What is your phone number?", "What is the mailing address?", "What is the city?", "What is the state?", "What is the zip code?", "What is the county?", "What other names you have used? Step if you dont have one."]
+    
+    private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US"))!
+    private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
+    private var recognitionTask: SFSpeechRecognitionTask?
+    private let audioEngine = AVAudioEngine()
+    
+    var questions = ["Enter your last name?", "Enter your first name?", "Enter your middle name?", "Please enter your date of birth? For example 1 slash 1 slash 19 95", "Enter your gender?", "What is your place of birth?", "Enter your social security number?", "What is your email?", "What is your phone number?", "What is the mailing address?", "What is the city?", "What is the state?", "What is the zip code?", "What is the county?", "What other names you have used? Skip if you dont have one."]
     var currentNumber = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        sayIntro()
+        get()
+        //sayIntro()
         CurrentQuestion.text = questions[0]
         saySpeech(text: questions[0])
         canvasView.clipsToBounds = true
@@ -90,10 +98,16 @@ class ViewController: UIViewController {
     }
     
     func sayIntro() {
-        let speech = "Hi, welcome to Easy Fill. We will read you all question from a form. Please write the answer on the i pad. Double tap to go to the next question."
+        let speech = "Hi, welcome to Easy Fill. We will read you all question from a form. Please write the answer on the i pad. Double tap to go to the next question. Please tap the Screen to start."
         saySpeech(text: speech)
     }
     
+    func get() {
+        Alamofire.request("http://104.196.218.215/process_image").response { response in // method defaults to `.get`
+            debugPrint(response)
+        }
+        
+    }
     
     func saveImage() {
         let renderer = UIGraphicsImageRenderer(size: canvasView.bounds.size)
@@ -102,8 +116,8 @@ class ViewController: UIViewController {
         }
         
         let imageData = UIImagePNGRepresentation(image)!
-        
-        Alamofire.upload(imageData, to: "https://httpbin.org/post").responseJSON { response in
+        //let base64String = imageData.base64EncodedString()
+        Alamofire.upload(imageData, to: "http://104.196.218.215/convert_image").responseJSON { response in
             debugPrint(response)
         }
         
@@ -143,6 +157,12 @@ class ViewController: UIViewController {
         })*/
         
     }
+    
+//    func recognizeSpeech() {
+//        let audioURL = Bundle.main.url(forResource: "perro", withExtension: "m4a")
+//        guard let myRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "en-US")) else { return }
+//        if !myRecognizer.isAvailable
+//    }
     
 }
 
