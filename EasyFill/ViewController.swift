@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import Alamofire
 
 class ViewController: UIViewController {
 
@@ -17,7 +18,7 @@ class ViewController: UIViewController {
     var path = UIBezierPath()
     var startPoint: CGPoint!
     var touchPoint: CGPoint!
-    var questions = ["What is your first name?", "What is your last name?", "What is your birthday?", "How old are you?"]
+    var questions = ["What is your last name?", "What is your first name?", "What is your birthday?", "How old are you?"]
     var currentNumber = 0
     
     override func viewDidLoad() {
@@ -33,6 +34,7 @@ class ViewController: UIViewController {
     }
 
     @objc func doubleTap() {
+        saveImage()
         path.removeAllPoints()
         canvasView.layer.sublayers = nil
         canvasView.setNeedsDisplay()
@@ -84,6 +86,55 @@ class ViewController: UIViewController {
         strokeLayer.path = path.cgPath
         canvasView.layer.addSublayer(strokeLayer)
         canvasView.setNeedsDisplay()
+    }
+    
+    func saveImage() {
+        let renderer = UIGraphicsImageRenderer(size: canvasView.bounds.size)
+        let image = renderer.image { ctx in
+            view.drawHierarchy(in: canvasView.bounds, afterScreenUpdates: true)
+        }
+        
+        let imageData = UIImagePNGRepresentation(image)!
+        
+        Alamofire.upload(imageData, to: "https://httpbin.org/post").responseJSON { response in
+            debugPrint(response)
+        }
+        
+        /*let authToken = "Token \(user_token!)"
+        
+        let headers = [
+            "Authorization": authToken
+        ]
+        
+        let parameters: Parameters = ["name": "test_place",
+                                      "description": "testing image upload from swift"]
+        
+        Alamofire.upload(
+            multipartFormData: { multipartFormData in
+                if let image = self.imageView.image {
+                    let imageData = UIImageJPEGRepresentation(image, 0.8)
+                    multipartFormData.append(imageData!, withName: "image", fileName: "photo.jpg", mimeType: "jpg/png")
+                }
+                for (key, value) in parameters {
+                    if value is String || value is Int {
+                        multipartFormData.append("\(value)".data(using: .utf8)!, withName: key)
+                    }
+                }
+        },
+            to: "URL",
+            headers: headers,
+            encodingCompletion: { encodingResult in
+                switch encodingResult {
+                case .success(let upload, _, _):
+                    upload.responseJSON { response in
+                        debugPrint(response)
+                        
+                    }
+                case .failure(let encodingError):
+                    print("encoding Error : \(encodingError)")
+                }
+        })*/
+        
     }
     
 }
